@@ -1,0 +1,24 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FaceDetection", "FaceDetection.csproj", "{08D94A60-6E74-4AE1-B791-AF8BA580780F}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "FaceRec", "..\FaceRec\FaceRec.vdproj", "{9D5E8EE7-EB5E-4CD8-A7B0-867AD09862C2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{08D94A60-6E74-4AE1-B791-AF8BA580780F}.Debug|x86.ActiveCfg = Debug|x86
+		{08D94A60-6E74-4AE1-B791-AF8BA580780F}.Debug|x86.Build.0 = Debug|x86
+		{08D94A60-6E74-4AE1-B791-AF8BA580780F}.Release|x86.ActiveCfg = Release|x86
+		{08D94A60-6E74-4AE1-B791-AF8BA580780F}.Release|x86.Build.0 = Release|x86
+		{9D5E8EE7-EB5E-4CD8-A7B0-867AD09862C2}.Debug|x86.ActiveCfg = Debug
+		{9D5E8EE7-EB5E-4CD8-A7B0-867AD09862C2}.Release|x86.ActiveCfg = Release
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
