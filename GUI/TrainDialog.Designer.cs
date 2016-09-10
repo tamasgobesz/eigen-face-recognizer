@@ -1,4 +1,4 @@
-﻿namespace FaceDetection
+﻿namespace FaceRecognizer
 {
     partial class TrainDialog
     {

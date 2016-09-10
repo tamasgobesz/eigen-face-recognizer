@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace FaceDetection
+namespace FaceRecognizer
 {
     public partial class TrainDialog : Form
     {

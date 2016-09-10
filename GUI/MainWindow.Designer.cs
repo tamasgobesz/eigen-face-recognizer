@@ -1,4 +1,4 @@
-﻿namespace FaceDetection
+﻿namespace FaceRecognizer
 {
     partial class MainWindow
     {
@@ -103,7 +103,7 @@
             // 
             // btPrev
             // 
-            this.btPrev.Image = global::FaceDetection.Properties.Resources.arrowLeft;
+            this.btPrev.Image = global::FaceRecognizer.Properties.Resources.arrowLeft;
             this.btPrev.Location = new System.Drawing.Point(558, 171);
             this.btPrev.Name = "btPrev";
             this.btPrev.Size = new System.Drawing.Size(65, 25);
@@ -150,7 +150,7 @@
             // 
             // btNext
             // 
-            this.btNext.Image = global::FaceDetection.Properties.Resources.arrowRight;
+            this.btNext.Image = global::FaceRecognizer.Properties.Resources.arrowRight;
             this.btNext.Location = new System.Drawing.Point(633, 171);
             this.btNext.Name = "btNext";
             this.btNext.Size = new System.Drawing.Size(65, 25);

@@ -11,14 +11,14 @@ using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 using Emgu.Util;
 using System.IO;
-using FaceDetection.Core;
+using FaceRecognizer.Core;
 
-namespace FaceDetection
+namespace FaceRecognizer
 {
     public partial class MainWindow : Form
     {
         private readonly int faceTrainLimit = 2;
-        private List<Image<Gray, Byte>> trainingImages;
+        private List<Image<Gray, byte>> trainingImages;
         private List<Image<Gray, Single>> eigenImages;
         private List<string> labels;
         private Capture capture;
@@ -80,7 +80,7 @@ namespace FaceDetection
             }
 
             eigenImages = new List<Image<Gray, float>>();
-            trainingImages = new List<Image<Gray, Byte>>();
+            trainingImages = new List<Image<Gray, byte>>();
 
             labels = new List<string>();
             font = new MCvFont(Emgu.CV.CvEnum.FONT.CV_FONT_HERSHEY_COMPLEX, 1.0, 1.0);
@@ -88,59 +88,63 @@ namespace FaceDetection
 
         private void timer_Tick(object sender, EventArgs e)
         {
-            using (Image<Bgr, Byte> frame = capture.QueryFrame())
+            if (capture == null)
+                return;
+
+            using (Image<Bgr, byte> frame = capture.QueryFrame())
             {
-                if (frame != null)
+                if (frame == null)
+                    return;
+                    string lb;
+
+                if (faceDetect)
                 {
-                    String lb;
-                    if (faceDetect)
+                    var grayFrame = frame.Convert<Gray, byte>();
+
+                    var faces = grayFrame.DetectHaarCascade(haar, 1.2, 3, HAAR_DETECTION_TYPE.DO_CANNY_PRUNING,
+                        new Size(frame.Width / 8, frame.Height / 8))[0];
+
+                    foreach (var face in faces)
                     {
-                        Image<Gray, Byte> grayFrame = frame.Convert<Gray, Byte>();
+                        frame.Draw(face.rect, new Bgr(255, 0, 0), 3);
 
-                        var faces = grayFrame.DetectHaarCascade(haar, 1.2, 3, HAAR_DETECTION_TYPE.DO_CANNY_PRUNING,
-                            new Size(frame.Width / 8, frame.Height / 8))[0];
+                        Image<Gray, byte> img = grayFrame.GetSubRect(face.rect);
+                        img = img.Resize(200, 200, Emgu.CV.CvEnum.INTER.CV_INTER_LINEAR);
 
-                        foreach (var face in faces)
+                        if (faceTrain)
                         {
-                            frame.Draw(face.rect, new Bgr(255, 0, 0), 3);
-
-                            Image<Gray, Byte> img = grayFrame.GetSubRect(face.rect);
-                            img = img.Resize(200, 200, Emgu.CV.CvEnum.INTER.CV_INTER_LINEAR);
-
-                            if (faceTrain)
+                            if (faceCount < faceTrainLimit)
                             {
-                                if (faceCount < faceTrainLimit)
-                                {
-                                    string fileName = Path.GetRandomFileName() + ".png";
-                                    string newPath = Path.Combine(path, fileName);
+                                var fileName = Path.GetRandomFileName() + ".png";
+                                var newPath = Path.Combine(path, fileName);
 
-                                    trainingImages.Add(img);
-                                    labels.Add(currentName);
-                                    img.Save(newPath);
-                                    faceCount++;
-                                }
-                                else
-                                {
-                                    refreshTrainingImages();
-                                    faceTrain = false;
-                                    faceDetect = false;
-                                    btTrain.Text = "Start Training";
-                                }
+                                trainingImages.Add(img);
+                                labels.Add(currentName);
+                                img.Save(newPath);
+                                faceCount++;
                             }
                             else
                             {
-                                faceCount = 0;
-                                lb = "";
-                                if (rcg != null)
-                                {
-                                    lb = rcg.Recognize(img);
-                                }
-                                frame.Draw(lb, ref font, new Point(face.rect.X, face.rect.Y), new Bgr(0, 0, 255));
+                                refreshTrainingImages();
+                                faceTrain = false;
+                                faceDetect = false;
+                                btTrain.Text = "Start Training";
                             }
                         }
+                        else
+                        {
+                            faceCount = 0;
+                            lb = "";
+
+                            if (rcg != null)
+                                lb = rcg.Recognize(img);
+
+                            frame.Draw(lb, ref font, new Point(face.rect.X, face.rect.Y), new Bgr(0, 0, 255));
+                        }
                     }
-                    pictureBox.Image = frame.ToBitmap();
                 }
+
+                pictureBox.Image = frame.ToBitmap();
             }
         }
 
@@ -171,12 +175,12 @@ namespace FaceDetection
             else
             {
                 faceCount = 0;
-                TrainDialog dlg = new TrainDialog(this);
+                var dlg = new TrainDialog(this);
                 dlg.ShowDialog();
             }
         }
 
-        public void createNewSubject(String subjectName)
+        public void createNewSubject(string subjectName)
         {
             if (faceTrain)
             {
@@ -209,7 +213,7 @@ namespace FaceDetection
             btPrev.Visible = true;
 
             eigenIndex = 0;
-            IList<IImage> tempList = rcg.GetEigenImages();
+            var tempList = rcg.GetEigenImages();
 
             eigenImages.Clear();
 
@@ -231,15 +235,17 @@ namespace FaceDetection
         {
             if (lvl <= 2)
             {
-                string[] files = Directory.GetFiles(src);
+                var files = Directory.GetFiles(src);
+
                 foreach (string fname in files)
                 {
-                    Image<Gray, Byte> temp = new Image<Gray, byte>(fname);
+                    Image<Gray, byte> temp = new Image<Gray, byte>(fname);
                     trainingImages.Add(temp);
                     labels.Add(currentLabel);
                 }
 
-                string[] subDirs = Directory.GetDirectories(src);
+                var subDirs = Directory.GetDirectories(src);
+
                 foreach (string sub in subDirs)
                 {
                     if ((File.GetAttributes(sub) & FileAttributes.ReparsePoint) != FileAttributes.ReparsePoint)

@@ -5,7 +5,7 @@ using System.Text;
 using Emgu.CV;
 using Emgu.CV.Structure;
 
-namespace FaceDetection.Core
+namespace FaceRecognizer.Core
 {
     public interface IRecognizer
     {
